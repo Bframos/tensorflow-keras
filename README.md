@@ -44,13 +44,24 @@ nvidia-smi
 
 After understanding Tensors and Gradients, we apply these concepts using **Keras Layers** to solve a real-world computer vision problem: classifying images from the **CIFAR-10** dataset (60,000 32x32 color images in 10 classes).
 
-### 🏗️ Building the Model with Keras
-We use a **Sequential** stack of layers to build a Convolutional Neural Network (CNN):
+# 🏗️ Building the Model for CIFAR-10
 
-* **Conv2D & MaxPooling2D:** Used for feature extraction (detecting edges, shapes, and textures).
-* **Flatten:** Converts the 2D feature maps into a 1D vector.
-* **Dense (Fully Connected):** Interprets the features to perform the final classification.
-* **Dropout:** A regularization technique to prevent overfitting.
+In this project, we apply the foundational concepts of Tensors and Variables to build a classification model for the **CIFAR-10** dataset. Instead of complex convolutional architectures, we use a **Dense (Fully Connected) Neural Network** approach to demonstrate the direct flow of data and how weights are optimized.
+
+### 🧠 Model Architecture
+
+The model is built using the **Keras Sequential API** with the following structure:
+
+1.  **Input Flattening:**
+    * Since CIFAR-10 images are $32 \times 32 \times 3$ pixel matrices, we use the **`Flatten`** layer first. This converts the 2D image data into a 1D vector of 3,072 values, allowing it to be fed into the processing layers.
+
+2.  **Fully Connected Layers (`Dense`):**
+    * We use **`Dense`** layers where every neuron is connected to every neuron in the previous layer.
+    * These layers use the **ReLU** activation function to learn non-linear patterns from the pixel data.
+    
+3.  **Output Layer:**
+    * The final layer is a `Dense` layer with **10 units**, representing the 10 classes of CIFAR-10 (airplane, automobile, bird, cat, deer, dog, frog, horse, ship, truck).
+    * It uses the **Softmax** activation function to output a probability distribution for each class.
 
 
 
