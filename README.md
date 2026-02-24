@@ -60,7 +60,10 @@ Using the high-level Keras API, the training workflow is simplified:
 2.  **Compilation:** Defining the `adam` optimizer and `sparse_categorical_crossentropy` loss function.
 3.  **Fitting:** Training the model for several epochs.
 
-### 📈 Results & Performance
-By stacking these layers, the model demonstrates the power of TensorFlow's engine:
-* **Accuracy:** A well-structured CNN can easily reach **70-80% accuracy** on the test set within minutes of training on a GPU.
-* **Loss Reduction:** Through the automatic gradients (`GradientTape`) managed by Keras, we observe a steady decline in the loss function, showing that the model is effectively learning the 10 different categories (airplane, automobile, bird, cat, deer, dog, frog, horse, ship, truck).
+### 📈 Results
+
+The notebook includes visualizations showing the evolution of **loss** and **accuracy** on the training and validation sets over the epochs, demonstrating the convergence of the manually implemented algorithm.
+
+| Accuracy | Loss |
+|--------|--------|
+| ![Accuracy](plots/acc.png) | ![Loss](plots/loss.png) |
