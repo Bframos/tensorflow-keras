@@ -25,9 +25,10 @@ This document is designed to guide you through the fundamental ecosystem of mode
 * **Tensors & Variables:** The difference between constant data and trainable parameters (`tf.Variable`).
 * **Tensor Operations:** How to create, reshape, and manipulate data structures.
 * **Gradient Computation:** Using `tf.GradientTape` to track operations and compute derivatives automatically.
-* **GPU Integration:** Verifying and utilizing NVIDIA hardware for faster processing.
+* **GPU Integration:** Verifying and utilizing NVIDIA hardware for faster processing (`nvidia-smi`).
+* **Manual Training Loop:** Implementing gradient descent by hand using `GradientTape` — demonstrating what Keras abstracts under the hood.
 
-
+---
 
 ## 🛠️ Setup and Installation
 
@@ -40,41 +41,75 @@ pip install tensorflow jupyter
 # Check if GPU is recognized (optional)
 nvidia-smi
 ```
-## 🖼️ Case Study: Training on CIFAR-10 with Keras Layers
 
-After understanding Tensors and Gradients, we apply these concepts using **Keras Layers** to solve a real-world computer vision problem: classifying images from the **CIFAR-10** dataset (60,000 32x32 color images in 10 classes).
+---
 
-# 🏗️ Building the Model for CIFAR-10
+## 🖼️ Case Study: Training on CIFAR-10 with Keras
 
-In this project, we apply the foundational concepts of Tensors and Variables to build a classification model for the **CIFAR-10** dataset. Instead of complex convolutional architectures, we use a **Dense (Fully Connected) Neural Network** approach to demonstrate the direct flow of data and how weights are optimized.
+After understanding Tensors and Gradients, we apply these concepts using **Keras** to solve a real-world computer vision problem: classifying images from the **CIFAR-10** dataset (60,000 32×32 color images in 10 classes).
+
+---
+
+## 🏗️ Building the Model for CIFAR-10
+
+Instead of complex convolutional architectures, we use a **Dense (Fully Connected) Neural Network** to demonstrate the direct flow of data and how weights are optimized.
+
+### 🔄 Data Preprocessing
+
+Before being fed into the model, the images are preprocessed **outside** the model using NumPy:
+
+* The 32×32×3 images are **manually reshaped** into 1D vectors of 3,072 values via `.reshape()`.
+* Pixel values are **normalized** from [0, 255] to [0, 1] by dividing by 255.
+
+> ⚠️ No `Flatten` layer is used inside the model — flattening is done as a preprocessing step before training.
+
+---
 
 ### 🧠 Model Architecture
 
 The model is built using the **Keras Sequential API** with the following structure:
 
-1.  **Input Flattening:**
-    * Since CIFAR-10 images are $32 \times 32 \times 3$ pixel matrices, we use the **`Flatten`** layer first. This converts the 2D image data into a 1D vector of 3,072 values, allowing it to be fed into the processing layers.
+| Layer | Units | Activation |
+|-------|-------|------------|
+| `Dense` | 64 | ReLU |
+| `Dense` (Output) | 10 | Softmax |
 
-2.  **Fully Connected Layers (`Dense`):**
-    * We use **`Dense`** layers where every neuron is connected to every neuron in the previous layer.
-    * These layers use the **ReLU** activation function to learn non-linear patterns from the pixel data.
-    
-3.  **Output Layer:**
-    * The final layer is a `Dense` layer with **10 units**, representing the 10 classes of CIFAR-10 (airplane, automobile, bird, cat, deer, dog, frog, horse, ship, truck).
-    * It uses the **Softmax** activation function to output a probability distribution for each class.
+The output layer has **10 units**, one for each CIFAR-10 class (airplane, automobile, bird, cat, deer, dog, frog, horse, ship, truck), and uses **Softmax** to output a probability distribution.
 
-
+---
 
 ### 🧪 Training Process
-Using the high-level Keras API, the training workflow is simplified:
-1.  **Normalization:** Scaling pixel values from [0, 255] to [0, 1].
-2.  **Compilation:** Defining the `adam` optimizer and `sparse_categorical_crossentropy` loss function.
-3.  **Fitting:** Training the model for several epochs.
+
+The notebook trains **two equivalent models** to demonstrate different ways of handling labels:
+
+**Model 1 — Integer Labels:**
+```python
+model.compile(
+    optimizer="adam",
+    loss="sparse_categorical_crossentropy",  # labels as integers
+    metrics=["accuracy"]
+)
+```
+
+**Model 2 — One-Hot Encoded Labels:**
+```python
+train_labels_cat = to_categorical(train_labels, num_classes=10)  # convert to one-hot
+
+model.compile(
+    optimizer="adam",
+    loss="categorical_crossentropy",  # labels as one-hot vectors
+    metrics=["accuracy"]
+)
+```
+
+Both approaches are functionally equivalent — the difference is only in label format.
+
+---
 
 ### 📈 Results
 
-The notebook includes visualizations showing the evolution of **loss** and **accuracy** on the training and validation sets over the epochs, demonstrating the convergence of the manually implemented algorithm.
+The notebook includes visualizations showing the evolution of **loss** and **accuracy** on the training and validation sets over 10 epochs, using Keras' `model.fit()` history object.
 
 | Accuracy | Loss |
-|--------|--------|
+|----------|------|
 | ![Accuracy](plots/acc.png) | ![Loss](plots/loss.png) |
